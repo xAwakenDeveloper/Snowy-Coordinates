@@ -1,0 +1,4 @@
+F:\Mody GTA V\SnoowyCoordinates\SnoowyCoordinates\bin\Release\SnoowyCoordinates.dll
+F:\Mody GTA V\SnoowyCoordinates\SnoowyCoordinates\obj\Release\SnoowyCoordinates.csproj.AssemblyReference.cache
+F:\Mody GTA V\SnoowyCoordinates\SnoowyCoordinates\obj\Release\SnoowyCoordinates.csproj.CoreCompileInputs.cache
+F:\Mody GTA V\SnoowyCoordinates\SnoowyCoordinates\obj\Release\SnoowyCoordinates.dll
