@@ -1,6 +1,7 @@
 ﻿using MSCLoader;
 using System;
 using System.Globalization;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
@@ -11,8 +12,9 @@ namespace SnowyCoordinates
         public override string ID => "SnowyCoordinates";
         public override string Name => "Snowy Coordinates";
         public override string Author => "Awaken Developer";
-        public override string Version => "1.0.5";
+        public override string Version => "1.0.2";
         public override string Description => "Displays your current coordinates in a modern way!";
+        public override byte[] Icon { get => base.Icon; set => base.Icon = value; }
         public override Game SupportedGames => Game.MyWinterCar;
 
         private bool showDisplay = false;
@@ -35,16 +37,31 @@ namespace SnowyCoordinates
             SetupFunction(Setup.OnLoad, Mod_OnLoad);
             SetupFunction(Setup.Update, OnUpdate);
             SetupFunction(Setup.OnGUI, OnGUI);
+            SetupFunction(Setup.ModSettings, ModSettings);
+        }
+
+        private void ModSettings()
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            using (var stream = assembly.GetManifestResourceStream("SnowyCoordinates.icon.png"))
+            {
+                if (stream != null)
+                {
+                    byte[] iconBytes = new byte[stream.Length];
+                    stream.Read(iconBytes, 0, iconBytes.Length);
+                    Icon = iconBytes; 
+                }
+            }
         }
 
         private void Mod_OnLoad()
         {
-            ModConsole.Log("[Snowy Coordinates] Mod loaded successfully. Press INSERT to show menu.");
+            ModConsole.Log("[<color=#34d8eb>Snowy Coordinates</color>] Mod loaded successfully! Press <color=#34d8eb>F5</color> to show menu.");
         }
 
         private void OnUpdate()
         {
-            if (Input.GetKeyDown(KeyCode.Insert))
+            if (Input.GetKeyDown(KeyCode.F5))
             {
                 showDisplay = !showDisplay;
             }
@@ -72,8 +89,8 @@ namespace SnowyCoordinates
 
         void InitializeGUI()
         {
-            bgTexture = CreateSolidTexture(bgColor);
-            borderTexture = CreateSolidTexture(borderColor);
+            bgTexture = CreateSolidTexture(new Color(0.08f, 0.09f, 0.12f, 1f));
+            borderTexture = CreateSolidTexture(new Color(0.12f, 0.13f, 0.16f, 1f));
             roundedBoxTexture = CreateRoundedBoxTexture(32);
 
             buttonBgColor = borderColor;
@@ -84,7 +101,7 @@ namespace SnowyCoordinates
                 fontSize = 12,
                 richText = true,
                 alignment = TextAnchor.MiddleCenter,
-                normal = { textColor = new Color(0.95f, 0.96f, 0.98f, 1f) }
+                normal = { textColor = Color.white }
             };
 
             buttonStyle = new GUIStyle(GUI.skin.button)
@@ -93,21 +110,24 @@ namespace SnowyCoordinates
                 fontStyle = FontStyle.Bold,
                 alignment = TextAnchor.MiddleCenter,
                 normal = {
-                    textColor = new Color(0.95f, 0.96f, 0.98f, 1f),
-                    background = CreateSolidTexture(buttonBgColor)
-                },
-                hover = {
-                    textColor = Color.white,
-                    background = CreateSolidTexture(buttonHover)
-                },
-                active = {
-                    textColor = Color.white,
-                    background = CreateSolidTexture(buttonHover)
-                },
+            textColor = Color.white,
+            background = CreateSolidTexture(buttonBgColor)
+            },
+
+            hover = {
+            textColor = Color.white,
+            background = CreateSolidTexture(buttonHover)
+            },
+
+            active = {
+            textColor = Color.white,
+            background = CreateSolidTexture(buttonHover)
+            },
                 padding = new RectOffset(10, 10, 6, 6),
                 margin = new RectOffset(2, 2, 2, 2)
             };
         }
+
 
         Texture2D CreateSolidTexture(Color c)
         {
@@ -159,48 +179,44 @@ namespace SnowyCoordinates
         void DrawCoordWindow(int windowID)
         {
             int topBarHeight = 18;
+            float gap = 12f;
+            float boxW = 85;
+            float boxH = 70;
+
+            GUI.DrawTexture(new Rect(0, 0, coordWindow.width, coordWindow.height), borderTexture);
+            GUI.DrawTexture(new Rect(1, topBarHeight, coordWindow.width - 2, coordWindow.height - topBarHeight - 1), bgTexture);
 
             GUI.DrawTexture(new Rect(0, 0, coordWindow.width, topBarHeight), borderTexture);
             GUI.DragWindow(new Rect(0, 0, coordWindow.width, topBarHeight));
 
-            GUI.DrawTexture(new Rect(0, topBarHeight, coordWindow.width, coordWindow.height - topBarHeight), bgTexture);
-
-            GUI.DrawTexture(new Rect(0, topBarHeight, coordWindow.width, 1), borderTexture);
-            GUI.DrawTexture(new Rect(0, coordWindow.height - 1, coordWindow.width, 1), borderTexture);
-            GUI.DrawTexture(new Rect(0, topBarHeight, 1, coordWindow.height - topBarHeight), borderTexture);
-            GUI.DrawTexture(new Rect(coordWindow.width - 1, topBarHeight, 1, coordWindow.height - topBarHeight), borderTexture);
-
             GUI.Label(new Rect(0, topBarHeight + 4, coordWindow.width, 25),
-                "<size=18><b><color=#34d8eb>Snowy Coordinates</color></b></size>",
-                labelStyle);
+                "<size=18><b><color=#34d8eb>Snowy Coordinates</color></b></size>", labelStyle);
 
-            float gap = 12f;
-
-            float yPos = topBarHeight + 25 + gap;
-            float boxW = 85;
-            float boxH = 70;
-            float spacing = gap;
-            float totalW = boxW * 3 + spacing * 2;
+            float totalW = boxW * 3 + gap * 2;
             float startX = (coordWindow.width - totalW) / 2;
+            float yPos = topBarHeight + 25 + gap;
 
             DrawCoordBox("X", playerPosition.x.ToString("F2"), new Rect(startX, yPos, boxW, boxH));
-            DrawCoordBox("Y", playerPosition.y.ToString("F2"), new Rect(startX + boxW + spacing, yPos, boxW, boxH));
-            DrawCoordBox("Z", playerPosition.z.ToString("F2"), new Rect(startX + (boxW + spacing) * 2, yPos, boxW, boxH));
+            DrawCoordBox("Y", playerPosition.y.ToString("F2"), new Rect(startX + boxW + gap, yPos, boxW, boxH));
+            DrawCoordBox("Z", playerPosition.z.ToString("F2"), new Rect(startX + (boxW + gap) * 2, yPos, boxW, boxH));
 
+            float btnW = 80;
+            float btnH = 25;
+            float totalBtnsWidth = btnW * 2 + gap;
+            float btnStartX = (coordWindow.width - totalBtnsWidth) / 2;
             float btnY = yPos + boxH + gap;
-            float btnW = boxW;
-            float btnStartX = startX;
 
-            if (GUI.Button(new Rect(btnStartX + boxW + spacing, btnY, btnW, 25), "COPY", buttonStyle))
+            if (GUI.Button(new Rect(btnStartX, btnY, btnW, btnH), "COPY", buttonStyle))
                 CopyToClipboard();
-            
-            float bottomY = btnY + 20 + gap;
 
-            GUI.Label(
-                new Rect(0, bottomY, coordWindow.width, 16),
-                "<size=10><color=#8899AA>Press INSERT to toggle the window.</color></size>",
-                labelStyle
-            );
+            if (GUI.Button(new Rect(btnStartX + btnW + gap, btnY, btnW, btnH), "SAVE", buttonStyle))
+                SaveCoordinates();
+
+            // hint
+            float hintY = btnY + btnH + gap;
+            GUI.Label(new Rect(0, hintY, coordWindow.width, 16),
+                "<size=10><color=#8899AA>Press F5 to toggle the window.</color></size>",
+                labelStyle);
         }
 
         void DrawCoordBox(string label, string value, Rect rect)
@@ -247,12 +263,35 @@ namespace SnowyCoordinates
                 SetClipboardData(CF_UNICODETEXT, hGlobal);
                 CloseClipboard();
 
-                ModConsole.Log($"<color=yellow>[Snowy Coordinates] XYZ copied to clipboard: {text}</color>");
+                ModConsole.Log($"[<color=#34d8eb>Snowy Coordinates</color>] Coordinates XYZ copied to clipboard: {text}");
             }
             else
             {
                 Marshal.FreeHGlobal(hGlobal);
-                ModConsole.Log("<color=red>[Snowy Coordinates] Clipboard busy!</color>");
+                ModConsole.Log("[<color=#34d8eb>Snowy Coordinates</color>] Clipboard busy!");
+            }
+        }
+
+        void SaveCoordinates()
+        {
+            try
+            {
+                string assemblyFolder = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                string folderPath = System.IO.Path.Combine(assemblyFolder, "SavedCoordinates");
+                string filePath = System.IO.Path.Combine(folderPath, "coordinates.txt");
+
+                if (!System.IO.Directory.Exists(folderPath))
+                    System.IO.Directory.CreateDirectory(folderPath);
+
+                string line = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] XYZ: {playerPosition.x:R}, {playerPosition.y:R}, {playerPosition.z:R}";
+
+                System.IO.File.AppendAllText(filePath, line + Environment.NewLine);
+
+                ModConsole.Log($"[<color=#34d8eb>Snowy Coordinates</color>] Coordinates XYZ saved to file: {line}");
+            }
+            catch (Exception ex)
+            {
+                ModConsole.Error($"[Snowy Coordinates] Failed to save coordinates: {ex.Message}");
             }
         }
     }
