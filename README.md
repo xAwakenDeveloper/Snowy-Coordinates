@@ -11,11 +11,12 @@
 <h1 align="center">Features</h2>
 
 <p align="center">
-⚡ <b>Performance friendly</b> – does not impact game performance<br>
-💻 <b>Modern interface</b> – clean and easy-to-read design<br>
-🗺️ <b>Displays current XYZ coordinates</b> – always know your location<br>
-📝 <b>Ability to copy coordinates to clipboard</b> – copy exact coordinates with one click<br>
-👆 <b>Ability to drag the window</b> – move the window anywhere on screen
+⚡ <b>Performance friendly</b> – Does not impact game performance<br>
+💻 <b>Modern interface</b> – Clean and easy-to-read design<br>
+🗺️ <b>Displays current XYZ coordinates</b> – Always know your location<br>
+📝 <b>Ability to copy coordinates to clipboard</b> – Copy exact coordinates with one click<br>
+📁 <b>Ability to save coordinates to text file</b> – Save multiple coordinates to text file<br>
+👆 <b>Ability to drag the window</b> – Move the window anywhere on screen
 </p>
 
 ---
@@ -60,7 +61,7 @@
 <h1 align="center">Usage & Restrictions</h2>
 
 <p align="center">
-This mod is for personal use only. Modification, redistribution, or commercial use is strictly prohibited.
+No restrictions, you are free to use, modify or distribute this mod!
 </p>
 
 ---
