@@ -47,7 +47,7 @@
 <p align="center"><strong>Here's a preview of how this mod looks in the game:</strong></p>
 
 <p align="center">
-  <img src="assets/preview.png" alt="Snowy Coordinates Preview" width="800">
+  <img src="assets/preview1.png" alt="Snowy Coordinates Preview" width="800">
 </p>
 
 <p align="center"><strong>Copying coordinates to clipboard:</strong></p>
